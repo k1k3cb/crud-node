@@ -2,7 +2,9 @@ const express = require('express');
 
 const path = require('path');
 const fsPromises = require('fs/promises');
+const { v4 } = require('uuid');
 const app = express();
+app.use(express.json());
 
 const filePath = path.resolve(__dirname, 'data/users.json');
 const PORT = 3000;
@@ -17,10 +19,9 @@ app.get('/', async (req, res) => {
   }
 });
 
-//! post no va
+
 app.post('/', async (req, res) => {
-  const userId = v4();
-  newUser = { id: userId, name: 'Perico', email: 'delospalotes@mail.com' };
+  const newUser = { id: v4(), name: req.body.name, email: req.body.email };
   try {
     //* leer archivo
     const fileData = await fsPromises.readFile(filePath);
