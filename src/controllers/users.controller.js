@@ -1,15 +1,11 @@
-const express = require('express');
+const usersController = {};
 
 const path = require('path');
 const fsPromises = require('fs/promises');
 const { v4 } = require('uuid');
-const app = express();
-app.use(express.json());
+const filePath = path.resolve(__dirname, '../../data/users.json');
 
-const filePath = path.resolve(__dirname, 'data/users.json');
-const PORT = 3000;
-
-app.get('/', async (req, res) => {
+usersController.getAllUsers = async (req, res) => {
   try {
     const fileData = await fsPromises.readFile(filePath);
     const users = JSON.parse(fileData);
@@ -17,10 +13,9 @@ app.get('/', async (req, res) => {
   } catch (error) {
     return res.send('error: ' + error);
   }
-});
+};
 
-
-app.post('/', async (req, res) => {
+usersController.createUser = async (req, res) => {
   const newUser = { id: v4(), name: req.body.name, email: req.body.email };
   try {
     //* leer archivo
@@ -34,9 +29,9 @@ app.post('/', async (req, res) => {
   } catch (error) {
     return res.send('error: ' + error);
   }
-});
+};
 
-app.patch('/:id', async (req, res) => {
+usersController.updateUser = async (req, res) => {
   const { id } = req.params;
   //   console.log('id: ' + id);
   try {
@@ -59,9 +54,9 @@ app.patch('/:id', async (req, res) => {
   } catch (error) {
     return res.send('error: ' + error);
   }
-});
+};
 
-app.delete('/:id', async (req, res) => {
+usersController.deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
     //* leer archivo
@@ -80,12 +75,10 @@ app.delete('/:id', async (req, res) => {
     //* envío archivo
     res.send(users[userIndex]);
 
-    res.send('delete');
+    res.send('User deleted successfully');
   } catch (error) {
     return res.send('error: ' + error);
   }
-});
+};
 
-app.listen(PORT, () => {
-  console.log('server listening on port ' + PORT);
-});
+module.exports = usersController;
